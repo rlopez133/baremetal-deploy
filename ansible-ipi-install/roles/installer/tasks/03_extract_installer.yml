@@ -1,0 +1,16 @@
+---
+
+- name: Copy PullSecret into {{ pullsecret_file }}
+  copy:
+    content: "{{ pullsecret }}"
+    dest: "{{ pullsecret_file }}"
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0644'
+
+- name: Extracting the installer
+  shell: |
+    /usr/local/bin/oc adm release extract --registry-config {{ pullsecret_file | quote }} --command={{ cmd |quote }} --to {{ extract_dir | quote }} {{ release_image.stdout | quote }}
+  args:
+    chdir: "{{ extract_dir }}"
+    executable: /bin/bash

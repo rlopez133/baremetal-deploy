@@ -1,0 +1,27 @@
+---
+- name: Check if rhsm.conf.kat-backup exists
+  stat:
+    path: /etc/rhsm/rhsm.conf.kat-backup
+  register: rhsmfile
+
+- name: "Check if any repos are enabled currently"
+  shell: 'subscription-manager repos --list-enabled | sed -ne "s/^Repo ID:[^a-zA-Z0-9]*\(.*\)/\1/p"'
+  register: enabled_repos
+  changed_when: no
+
+- name: IPI-INSTALL Register host via Activation key
+  redhat_subscription:
+    activationkey: "{{ activation_key }}"
+    org_id: "{{ org_id }}"
+    state: present
+    pool: '^(Red Hat Enterprise Linux Server, Standard (8 sockets) (Unlimited guests))$'
+  ignore_errors: yes
+  register: actkey
+  when: 
+    - rhsmfile.stat.exists == False
+    - activation_key is defined
+    - activation_key != ""
+    - org_id is defined
+    - org_id != ""
+    - enabled_repos.stdout_lines == []
+

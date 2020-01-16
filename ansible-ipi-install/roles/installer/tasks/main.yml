@@ -1,0 +1,11 @@
+---
+# tasks file for installer
+- include_tasks: 01_get_release_img.yml
+- include_tasks: 02_get_oc.yml 
+- include_tasks: 03_extract_installer.yml
+- include_tasks: 04_create_metal3.yml
+- include_tasks: 05_create_manifest.yml
+- include_tasks: 06_extramanifests.yml
+- include_tasks: 07_deploy_ocp.yml
+#- include_tasks: 08_cleanup_sub_man_registeration.yml
+

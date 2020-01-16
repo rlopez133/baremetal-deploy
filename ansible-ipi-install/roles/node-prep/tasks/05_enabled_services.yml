@@ -1,0 +1,11 @@
+---
+- name: IPI-INSTALL Enable Services Firewalld
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+  - firewalld
+  - libvirtd
+
+

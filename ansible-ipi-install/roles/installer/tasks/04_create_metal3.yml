@@ -1,0 +1,26 @@
+---
+- name: Get COMMIT_ID
+  shell: |
+    {{ extract_dir }}/openshift-baremetal-install version | grep '^built from commit' | awk '{print $4}' 
+  register: commit_id
+
+- name: Get RHCOS_URI
+  shell: |
+    curl \
+    -s \
+    -S \
+    https://raw.githubusercontent.com/openshift/installer/{{ commit_id.stdout }}/data/data/rhcos.json | jq .images.openstack.path | sed 's/"//g'
+  register: rhcos_uri
+
+- name: Get RHCOS_PATH
+  shell: |
+    curl -s -S https://raw.githubusercontent.com/openshift/installer/{{ commit_id.stdout }}/data/data/rhcos.json | jq .baseURI | sed 's/"//g' 
+  register: rhcos_path
+
+- name: Generate metal3-config.yaml
+  template:
+    src: metal3-config.j2
+    dest: "{{ dir }}/metal3-config.yaml"
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0644'

@@ -1,0 +1,27 @@
+---
+- name: Get the ocp client tar gunzip file
+  get_url:
+    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/openshift-client-linux-{{ version }}.tar.gz"
+    dest: "{{ extract_dir }}"
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0755'
+
+- name: "Untar the openshift-client-linux-{{ version }}.tar.gz"
+  unarchive:
+    src: "{{ extract_dir }}/openshift-client-linux-{{ version }}.tar.gz"
+    dest: "{{ extract_dir }}"
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0755'
+    remote_src: yes
+ 
+- name: Copy oc binary to /usr/local/bin
+  copy:
+    src: "{{ extract_dir }}/oc"
+    dest: /usr/local/bin/oc
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0755'
+    remote_src: yes
+

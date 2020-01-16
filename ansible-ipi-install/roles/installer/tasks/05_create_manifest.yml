@@ -1,0 +1,25 @@
+---
+- name: Create OpenShift Manifest
+  shell: |
+    {{ extract_dir }}/openshift-baremetal-install --dir {{ dir }} create manifests
+
+- name: Ensure the manifests dir is owned by {{ myuser }}
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0755'
+  with_items:
+  - "{{ dir }}/openshift"
+  - "{{ dir }}/manifests"
+  
+- name: Copy the metal3-config.yaml to {{ dir }}/openshift directory
+  copy:
+    src: "{{ dir }}/metal3-config.yaml"
+    dest: "{{ dir }}/openshift/99_metal3-config.yaml"
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0644'
+    remote_src: yes

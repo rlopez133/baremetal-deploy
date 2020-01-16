@@ -1,0 +1,12 @@
+---
+- name: IPI-INSTALL Create config dir and install dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ myuser }}"
+    group: "{{ myuser }}"
+    mode: '0755'
+  with_items:
+  - "{{ dir }}"
+  - "{{ extract_dir }}"
+

@@ -1,0 +1,11 @@
+---
+- include_tasks: 01_sub_man_register.yml
+- include_tasks: 02_bridge.yml 
+- include_tasks: 03_req_packages.yml 
+- include_tasks: 04_modify_sudo_user.yml
+- include_tasks: 05_enabled_services.yml 
+- include_tasks: 06_enabled_fw_services.yml
+- include_tasks: 07_libvirt_pool.yml  
+- include_tasks: 08_create_config_install_dirs.yml
+- include_tasks: 09_create-install-config.yml
+- include_tasks: 10_power_off_cluster_servers.yml

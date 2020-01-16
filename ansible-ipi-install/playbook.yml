@@ -1,0 +1,22 @@
+---
+- name: IPI on Baremetal Installation Playbook
+  hosts: provisioner
+  vars:
+    activation_key: "mykey"
+    org_id: "111111"
+    myuser: kni
+    version: "4.3.0-0.nightly-2019-12-09-035405"
+    pullsecret: 'ENTER SECRET HERE'
+  roles:
+    - role: node-prep
+      vars:
+        domain: example.com
+        cluster: cluster-name
+        extcidrnet: 10.1.1.0/21
+        dnsvip: 10.1.1.10
+        numworkers: 2
+        nummasters: 3
+        apivip: 10.1.1.11
+        ingressvip: 10.1.1.12
+        ns1vip: 10.1.1.10
+    - role: installer

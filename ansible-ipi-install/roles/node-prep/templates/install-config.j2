@@ -1,0 +1,41 @@
+apiVersion: v1
+baseDomain: {{ domain }}
+metadata:
+  name: {{ cluster }}
+networking:
+  machineCIDR: {{ extcidrnet }}
+compute:
+- name: worker
+  replicas: {{ numworkers }}
+controlPlane:
+  name: master
+  replicas: {{ nummasters }}
+  platform:
+    baremetal: {}
+platform:
+  baremetal:
+    apiVIP: {{ apivip }}
+    ingressVIP: {{ ingressvip }}
+    dnsVIP: {{ ns1vip }}
+    hosts:
+{% for host in groups['masters'] %}
+      - name: {{ hostvars[host]['name'] }}
+        role: {{ hostvars[host]['role'] }}
+        bmc:
+          address: ipmi://{{ hostvars[host]['ipmi_address'] }}
+          username: {{ hostvars[host]['user'] }}
+          password: {{ hostvars[host]['password'] }}
+        bootMACAddress: {{ hostvars[host]['mac'] }}
+        hardwareProfile: default
+{% endfor %}
+{% for host in groups['workers'] %}
+      - name: {{ hostvars[host]['name'] }}
+        role: {{ hostvars[host]['role'] }}
+        bmc:
+          address: ipmi://{{ hostvars[host]['ipmi_address'] }}
+          username: {{ hostvars[host]['user'] }}
+          password: {{ hostvars[host]['password'] }}
+        bootMACAddress: {{ hostvars[host]['mac'] }}
+        hardwareProfile: unknown
+{% endfor %}
+pullSecret: '{{ pullsecret }}'

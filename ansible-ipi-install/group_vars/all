@@ -1,0 +1,47 @@
+# The global variable file for IPI on Baremetal installation
+
+# The provisioning NIC (NIC1) used on all bm nodes
+prov_nic: eno1
+
+# The public NIC (NIC2) used on all bm nodes
+pub_nic: eno2
+
+# Activation-key for proper setup of subscription-manager
+activation_key: ""
+
+# Activation-key org_id for proper setup of subscription-manager
+org_id: ""
+
+# The directory used to store the cluster configuration files (install-config.yaml, pull-secret.txt, metal3-config.yaml)
+dir: /home/{{ myuser }}/clusterconfigs
+
+# Location of the pullsecret file on the remote provisioning bm node
+pullsecret_file: /home/{{ myuser }}/clusterconfigs/pull-secret.txt
+
+# Location of where the openshift-installer will be extracted
+extract_dir: /home/{{ myuser }}/extract
+
+# The user used to do the openshift-installation (requires passwordless sudo priv)
+myuser: ""
+
+# The cmd used for openshift-install extraction
+cmd: openshift-baremetal-install
+
+# The version of the openshift-installer 
+version: "4.3.0-0.nightly-2019-12-09-035405"
+
+# Provisioning IP address (default value)
+prov_ip: 172.22.0.3
+
+### Vars regarding install-config.yaml
+domain: ""
+cluster: ""
+extcidrnet: ""
+dnsvip: ""
+numworkers: ""
+nummasters: ""
+apivip: ""
+ingressvip: ""
+ns1vip: ""
+pullsecret: ""
+

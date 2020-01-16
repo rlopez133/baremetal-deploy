@@ -1,0 +1,16 @@
+---
+- name: Install required packages for ipmi_power module
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ipmi_power_packages }}"
+
+- name: IPI-INSTALL Power OFF All Nodes
+  ipmi_power:
+    name: "{{ hostvars[item]['ipmi_address'] }}"
+    user: "{{ hostvars[item]['user'] }}"
+    password: "{{ hostvars[item]['password'] }}"
+    state: off
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
