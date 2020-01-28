@@ -1,2 +1,4 @@
 ---
 # vars file for installer
+pullsecret_file: /home/{{ myuser }}/clusterconfigs/pull-secret.txt
+cmd: openshift-baremetal-install
