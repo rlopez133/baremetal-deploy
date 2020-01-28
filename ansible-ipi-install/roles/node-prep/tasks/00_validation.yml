@@ -1,0 +1,8 @@
+- fail: msg="The version is undefined or empty. Use a value such as 'latest-4.3' or 'latest-4.4' or an explicit version."
+  when: (version is undefined) or (version|length == 0)
+
+- fail: msg="User is undefined or empty. Set your privileged user"
+  when: (myuser is undefined) or (myuser|length == 0)
+
+- fail: msg="A variable regarding install-config.yml is undefined or empty."
+  when: (domain is undefined) or (domain|length == 0) or (cluster is undefined) or (cluster|length == 0) or (extcidrnet is undefined) or (extcidrnet|length == 0) or (dnsvip is undefined) or (dnsvip|length == 0) or (numworkers is undefined) or (numworkers|length == 0) or (nummasters is undefined) or (nummasters|length == 0) or (apivip is undefined) or (apivip|length == 0) or (ingressvip is undefined) or (ingressvip|length == 0) or (pullsecret is undefined) or (pullsecret|length == 0)
