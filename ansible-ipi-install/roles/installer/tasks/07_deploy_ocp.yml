@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Deploy OpenShift Cluster
+- name: Deploy OpenShift Cluster
   shell: |
     {{ extract_dir }}/openshift-baremetal-install --dir {{ dir }} --log-level debug create cluster
 

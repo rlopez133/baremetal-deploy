@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Power OFF All Nodes
+- name: Power OFF All Nodes
   ipmi_power:
     name: "{{ hostvars[item]['ipmi_address'] }}"
     user: "{{ hostvars[item]['user'] }}"

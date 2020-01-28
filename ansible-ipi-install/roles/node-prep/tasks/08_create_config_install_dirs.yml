@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Create config dir and install dir
+- name: Create config dir and install dir
   file:
     path: "{{ item }}"
     state: directory

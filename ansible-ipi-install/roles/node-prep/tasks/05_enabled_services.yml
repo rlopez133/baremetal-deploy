@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Enable Services Firewalld
+- name: Enable Services Firewalld
   service:
     name: "{{ item }}"
     state: restarted

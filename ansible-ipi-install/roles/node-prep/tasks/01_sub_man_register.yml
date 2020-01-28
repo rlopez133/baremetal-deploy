@@ -4,12 +4,12 @@
     path: /etc/rhsm/rhsm.conf.kat-backup
   register: rhsmfile
 
-- name: "Check if any repos are enabled currently"
+- name: Check if any repos are enabled currently
   shell: 'subscription-manager repos --list-enabled | sed -ne "s/^Repo ID:[^a-zA-Z0-9]*\(.*\)/\1/p"'
   register: enabled_repos
   changed_when: no
 
-- name: IPI-INSTALL Register host via Activation key
+- name: Register host via Activation key
   redhat_subscription:
     activationkey: "{{ activation_key }}"
     org_id: "{{ org_id }}"

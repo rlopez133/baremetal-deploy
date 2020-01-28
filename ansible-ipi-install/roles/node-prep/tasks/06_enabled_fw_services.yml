@@ -1,11 +1,11 @@
 ---
-- name: IPI-INSTALL Enable Firewall for HTTP
+- name: Enable Firewall for HTTP
   firewalld:
     service: http
     permanent: yes
     state: enabled
 
-- name: IPI-INSTALL Open Firewall port 5000/tcp, zone libvirt and public
+- name: Open Firewall port 5000/tcp, zone libvirt and public
   firewalld:
     port: 5000/tcp
     permanent: yes

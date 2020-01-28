@@ -1,4 +1,4 @@
-- name: IPI-INSTALL Get Release Image Text file
+- name: Get Release Image Text file
   get_url:
     url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/release.txt"
     dest: "{{ dir }}"
@@ -6,7 +6,7 @@
     group: "{{ myuser }}"
     mode: '0755'
 
-- name: IPI-INSTALL Register release image value
+- name: Register release image value
   shell: |
     cat {{ dir }}/release.txt | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'
   register: release_image

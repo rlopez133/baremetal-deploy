@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Add "{{ myuser }}" user to libvirt group and get ssh key setup
+- name: Add "{{ myuser }}" user to libvirt group and get ssh key setup
   user: 
     name: "{{ myuser }}"
     groups: libvirt 

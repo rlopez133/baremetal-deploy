@@ -1,5 +1,5 @@
 ---
-- name: IPI-INSTALL Unregister host via subscription-manager
+- name: Unregister host via subscription-manager
   redhat_subscription:
     activationkey: "{{ activation_key }}"
     org_id: "{{ org_id }}"
