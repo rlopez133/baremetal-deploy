@@ -42,6 +42,5 @@ numworkers: ""
 nummasters: ""
 apivip: ""
 ingressvip: ""
-ns1vip: ""
 pullsecret: ""
 

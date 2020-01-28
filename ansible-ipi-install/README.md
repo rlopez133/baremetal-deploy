@@ -259,7 +259,6 @@ Sample playbook.yml
         nummasters: 3
         apivip: 10.1.1.11
         ingressvip: 10.1.1.12
-        ns1vip: 10.1.1.10
     - role: installer
 ~~~
 
