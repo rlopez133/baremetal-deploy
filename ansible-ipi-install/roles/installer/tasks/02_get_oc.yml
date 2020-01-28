@@ -1,15 +1,15 @@
 ---
 - name: Get the ocp client tar gunzip file
   get_url:
-    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/openshift-client-linux-{{ version }}.tar.gz"
+    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/openshift-client-linux-{{ release_version }}.tar.gz"
     dest: "{{ extract_dir }}"
     owner: "{{ myuser }}"
     group: "{{ myuser }}"
     mode: '0755'
 
-- name: "Untar the openshift-client-linux-{{ version }}.tar.gz"
+- name: "Untar the openshift-client-linux-{{ release_version }}.tar.gz"
   unarchive:
-    src: "{{ extract_dir }}/openshift-client-linux-{{ version }}.tar.gz"
+    src: "{{ extract_dir }}/openshift-client-linux-{{ release_version }}.tar.gz"
     dest: "{{ extract_dir }}"
     owner: "{{ myuser }}"
     group: "{{ myuser }}"

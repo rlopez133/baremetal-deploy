@@ -1,3 +1,6 @@
+- fail: msg="The version is undefined or empty. Use a value such as 'latest-4.3' or 'latest-4.4' or an explicit version."
+  when: (version is undefined) or (version|length == 0)
+
 - name: Get Release Image Text file
   get_url:
     url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/release.txt"
@@ -11,4 +14,14 @@
     cat {{ dir }}/release.txt | grep 'Pull From: quay.io' | awk -F ' ' '{print $3}'
   register: release_image
 
+- name: Register release version
+  shell: |
+    cat {{ dir }}/release.txt | awk '/Name:/ {print $NF}'
+  register: release_version_output
+
+- name: Set release_version fact
+  set_fact:
+    release_version: "{{ release_version_output.stdout }}"
+
 - debug: msg="{{ release_image.stdout }}"
+- debug: msg="{{ release_version_output.stdout }}"
