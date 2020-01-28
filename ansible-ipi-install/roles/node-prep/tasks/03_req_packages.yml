@@ -1,6 +1,0 @@
----
-- name: IPI-INSTALL Install required packages
-  package:
-    name: "{{ item }}"
-    state: latest
-  with_items: "{{ package_list }}"
