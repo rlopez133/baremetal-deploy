@@ -31,7 +31,7 @@ For the manual details, visit our [Installation Guide](https://github.com/opensh
 and 2 worker nodes)
 * Minimum Setup: 4 Physical servers (1 provision node, 3 master nodes)
 * Each server needs 2 NICs pre-configured. NIC1 for the private network and 
-NIC2 for the external network. NIC interface names need to be identical. 
+NIC2 for the external network. NIC interface names must be identical across all nodes. 
 See [issue](https://github.com/openshift/installer/issues/2762)
 * Each server should have a RAID-1 configured and initialized
 * Each server must have IPMI configured
