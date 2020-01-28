@@ -1,10 +1,4 @@
 ---
-- name: Install required packages for virt_pool module usage
-  package:
-    name: "{{ item }}"
-    state: latest
-  with_items: "{{ virtpool_packages }}"
-
 - name: Define Storage Pool for default
   virt_pool:
     command: define
