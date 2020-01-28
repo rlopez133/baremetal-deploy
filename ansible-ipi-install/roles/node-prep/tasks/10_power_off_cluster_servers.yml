@@ -2,8 +2,8 @@
 - name: Power OFF All Nodes
   ipmi_power:
     name: "{{ hostvars[item]['ipmi_address'] }}"
-    user: "{{ hostvars[item]['user'] }}"
-    password: "{{ hostvars[item]['password'] }}"
+    user: "{{ hostvars[item]['ipmi_user'] }}"
+    password: "{{ hostvars[item]['ipmi_password'] }}"
     state: off
   with_items:
     - "{{ groups['masters'] }}"
