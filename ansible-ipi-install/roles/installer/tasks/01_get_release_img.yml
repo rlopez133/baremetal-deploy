@@ -1,6 +1,3 @@
-- fail: msg="The version is undefined or empty. Use a value such as 'latest-4.3' or 'latest-4.4' or an explicit version."
-  when: (version is undefined) or (version|length == 0)
-
 - name: Get Release Image Text file
   get_url:
     url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp-dev-preview/{{ version }}/release.txt"
