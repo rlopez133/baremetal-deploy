@@ -23,9 +23,9 @@ platform:
         role: {{ hostvars[host]['role'] }}
         bmc:
           address: ipmi://{{ hostvars[host]['ipmi_address'] }}
-          username: {{ hostvars[host]['user'] }}
-          password: {{ hostvars[host]['password'] }}
-        bootMACAddress: {{ hostvars[host]['mac'] }}
+          username: {{ hostvars[host]['ipmi_user'] }}
+          password: {{ hostvars[host]['ipmi_password'] }}
+        bootMACAddress: {{ hostvars[host]['provision_mac'] }}
         hardwareProfile: default
 {% endfor %}
 {% for host in groups['workers'] %}
@@ -33,9 +33,9 @@ platform:
         role: {{ hostvars[host]['role'] }}
         bmc:
           address: ipmi://{{ hostvars[host]['ipmi_address'] }}
-          username: {{ hostvars[host]['user'] }}
-          password: {{ hostvars[host]['password'] }}
-        bootMACAddress: {{ hostvars[host]['mac'] }}
+          username: {{ hostvars[host]['ipmi_user'] }}
+          password: {{ hostvars[host]['ipmi_password'] }}
+        bootMACAddress: {{ hostvars[host]['provision_mac'] }}
         hardwareProfile: unknown
 {% endfor %}
 pullSecret: '{{ pullsecret }}'
