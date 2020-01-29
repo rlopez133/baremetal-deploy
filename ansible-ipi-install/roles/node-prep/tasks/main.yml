@@ -1,8 +1,8 @@
 ---
 - include_tasks: 00_validation.yml
 - include_tasks: 01_sub_man_register.yml
-- include_tasks: 02_bridge.yml 
-- include_tasks: 03_req_packages.yml 
+- include_tasks: 02_req_packages.yml 
+- include_tasks: 03_bridge.yml
 - include_tasks: 04_modify_sudo_user.yml
 - include_tasks: 05_enabled_services.yml 
 - include_tasks: 06_enabled_fw_services.yml
