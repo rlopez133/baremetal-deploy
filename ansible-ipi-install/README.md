@@ -78,12 +78,11 @@ For simplicity, the steps to create the user named `kni` is as follows:
 
 # Tour of the Ansible Playbook
 
-The `ansible-ipi` playbook consists of 3 main directories:
-* `group_vars` - contains the file `all` that has all the default variable values
-and their defintion
-* `inventory` - contains the file `hosts` that requires the setting up of your 
-provision node, master nodes, and worker nodes. Each section will require 
-additional details (i.e. Management credentials).
+The `ansible-ipi` playbook consists of 2 main directories:
+
+* `inventory` - contains the file `hosts.sample` that:
+  * contains all the modifiable variables, their default values, and their definition. Some variables are empty ensuring user's give an explicit value.
+  * the setting up of your provision node, master nodes, and worker nodes. Each section will require additional details (i.e. Management credentials).
 * `roles` - contains two roles: `node-prep` and `installer`. `node-prep` handles
 all the prerequisites that the provisioner node requires prior to running the 
 installer. The `installer` role handles extracting the installer, setting up
@@ -92,10 +91,11 @@ the manifests, and running the Red Hat OpenShift installation.
 The tree structure is shown below:
 
 ~~~sh
+├── ansible.cfg
 ├── group_vars
 │   └── all
 ├── inventory
-│   └── hosts
+│   └── hosts.sample
 ├── playbook.yml
 └── roles
     ├── installer
@@ -133,9 +133,10 @@ The tree structure is shown below:
         ├── meta
         │   └── main.yml
         ├── tasks
+        |   ├── 00_validation.yml
         │   ├── 01_sub_man_register.yml
-        │   ├── 02_bridge.yml
-        │   ├── 03_req_packages.yml
+        │   ├── 02_req_packages.yml
+        │   ├── 03_bridge.yml
         │   ├── 04_modify_sudo_user.yml
         │   ├── 05_enabled_services.yml
         │   ├── 06_enabled_fw_services.yml
@@ -153,7 +154,6 @@ The tree structure is shown below:
         │   └── test.yml
         └── vars
             └── main.yml
-
 ~~~
 
 
@@ -161,15 +161,16 @@ The tree structure is shown below:
 
 The following are the steps to successfully run the Ansible playbook. 
 
-## Create the `ansible.cfg` file
+## Modify the `ansible.cfg` file
 
 While the `ansible.cfg` may vary upon your environment a sample is provided 
-below.
+in the repository. Modify the `inventory` to correspond with the `inventory` 
+path in your environment. 
 
 ~~~sh
 $ cat ansible.cfg 
 [defaults]
-inventory=/path/to/ansible-ipi/inventory
+inventory=/path/to/baremetal-deploy/ansible-ipi-install/inventory
 remote_user=kni
 
 [privilege_escalation]
@@ -181,6 +182,24 @@ NOTE: Ensure to change the `remote_user` and `inventory` path as deemed
 apprioriate for your environment. The `remote_user` is the user previously
 created on the provision node. 
 
+## Ansible version 
+
+Ensure that your environment is using Ansible 2.9 or greater. The following
+command can be used to verify.
+
+~~~sh
+ansible --version
+ansible 2.9.1
+  config file = /path/to/baremetal-deploy/ansible-ipi-install/ansible.cfg
+  configured module search path = ['/home/rlopez/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.7/site-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 3.7.2 (default, Jan 16 2019, 19:49:22) [GCC 8.2.1 20181215 (Red Hat 8.2.1-6)]
+~~~
+
+NOTE: The config file section should point to the path of your `ansible.cfg`
+you just modified in the previous section. 
+
 ## Copy local ssh key to provision node
 
 With the `ansible.cfg` file in place, the next step is to ensure to copy our
@@ -190,29 +209,91 @@ public `ssh` key to our provision node using `ssh-copy-id`.
 $ ssh-copy-id <user>@provisioner.example.com
 ~~~
 
-NOTE: <user> should be the user previously created on the provision node. 
+NOTE: <user> should be the user previously created on the provision node
+(i.e. `kni`)
 
 ## Modifying the `inventory/hosts` file
+
+The hosts file provides all the definable variables and provides a description
+of each variable. Some of the variables are explicitly left empty and *require*
+user input for the playbook to run. 
 
 Within the hosts file ensure to set all your nodes that will be used to deploy
 IPI on baremetal. There are 3 groups: `masters`, `workers`, and `provisioner`. 
 The `masters` and `workers` group collects information about the host such as
 its name, role, user management (i.e. iDRAC) user, user management (i.e. iDRAC)
-password, ipmi_address to access the server and the mac address of NIC1 that
-resides on the provisioning network. 
+password, ipmi_address to access the server and the provision mac address (NIC1)
+that resides on the provisioning network. 
 
 Below is a sample of the inventory/hosts file
 
 ~~~sh
+[all:vars]
+
+###############################################################################
+# Required configuration variables for IPI on Baremetal Installations         #
+###############################################################################
+
+# The provisioning NIC (NIC1) used on all baremetal nodes
+prov_nic=eno1
+
+# The public NIC (NIC2) used on all baremetal nodes
+pub_nic=eno2
+
+# (Optional) Activation-key for proper setup of subscription-manager, empty or undefined value skips registration
+activation_key=""
+
+# (Optional) Activation-key org_id for proper setup of subscription-manager, empty or undefined value skips registration
+org_id=""
+
+# The directory used to store the cluster configuration files (install-config.yaml, pull-secret.txt, metal3-config.yaml)
+dir=/home/{{ myuser }}/clusterconfigs
+
+# Location of where the openshift-installer will be extracted
+extract_dir=/home/{{ myuser }}/extract
+
+# The user (i.e. kni) used to do the openshift-installation (requires passwordless sudo priv)
+myuser=""
+
+# The version of the openshift-installer, undefined or empty results in the playbook failing with error message.
+# Values accepted: 'latest-4.3', 'latest-4.4', explicit version i.e. 4.3.0-0.nightly-2019-12-09-035405
+version=""
+
+# Provisioning IP address (default value)
+prov_ip=172.22.0.3
+
+######################################
+# Vars regarding install-config.yaml #
+######################################
+
+# Base domain, i.e. example.com
+domain=""
+# Name of the cluster, i.e. openshift
+cluster=""
+# The public CIDR address, i.e. 10.1.1.0/21
+extcidrnet=""
+# An IP reserved on the baremetal network. 
+dnsvip=""
+# Number of workers nodes to deploy
+numworkers=""
+# Number of master nodes to deploy
+nummasters=""
+# A copy of your pullsecret from https://cloud.redhat.com/openshift/install/metal/user-provisioned
+pullsecret=""
+
+
+# Master nodes
 [masters]
-master-0 name=master-0 role=master user=admin password=password ipmi_address=192.168.1.1 mac=ec:f4:bb:da:0c:58
-master-1 name=master-1 role=master user=admin password=password ipmi_address=192.168.1.2 mac=ec:f4:bb:da:32:88
-master-2 name=master-2 role=master user=admin password=password ipmi_address=192.168.1.3 mac=ec:f4:bb:da:0d:98
+master-0 name=master-0 role=master ipmi_user=admin ipmi_password=password ipmi_address=192.168.1.1 provision_mac=ec:f4:bb:da:0c:58
+master-1 name=master-1 role=master ipmi_user=admin ipmi_password=password ipmi_address=192.168.1.2 provision_mac=ec:f4:bb:da:32:88
+master-2 name=master-2 role=master ipmi_user=admin ipmi_password=password ipmi_address=192.168.1.3 provision_mac=ec:f4:bb:da:0d:98
 
+# Worker nodes
 [workers]
-worker-0 name=worker-0 role=worker user=admin password=password ipmi_address=192.168.1.4 mac=ec:f4:bb:da:0c:18
-worker-1 name=worker-1 role=worker user=admin password=password ipmi_address=192.168.1.5 mac=ec:f4:bb:da:32:28
+worker-0 name=worker-0 role=worker ipmi_user=admin ipmi_password=password ipmi_address=192.168.1.4 provision_mac=ec:f4:bb:da:0c:18
+worker-1 name=worker-1 role=worker ipmi_user=admin ipmi_password=password ipmi_address=192.168.1.5 provision_mac=ec:f4:bb:da:32:28
 
+# Provision Host
 [provisioner]
 provisioner.example.com
 ~~~
@@ -220,52 +301,31 @@ provisioner.example.com
 NOTE: The `ipmi_address` can take a fully qualified name assuming it is 
 resolvable.
 
+NOTE: A detailed description of the vars under the section 
+`Vars regarding install-config.yaml` 
+may be reviewed within  
+[Configure the install-config and metal3-config](https://github.com/openshift-kni/baremetal-deploy/blob/master/install-steps.md#configure-the-install-config-and-metal3-config)
+if unsure how to populate. 
+
 WARNING: If no `workers` are included, do not remove the workers group 
-(`[workers]`) as it required to properly build the `install-config.yaml` file.
+(`[workers]`) as it is required to properly build the `install-config.yaml` file.
 
+## The Ansible `playbook.yml`
 
-## Reviewing `group_vars/all` file
-
-Review the variables that have been set within `group_vars/all`. Default values
-have been given to all the variables and they may be overwritten in the 
-`playbook.yml` file. 
-
-## Adding Variable Values to the `playbook.yml`
-
-In the sample `playbook.yml` you will find all the variables that are required
-to be overwritten by the user. However, more can be added. For example, say you
-don't like where the `extract_dir` variables extracts the openshift-installer, 
-this variable may be added here under the vars section. 
+The Ansible playbook connects to your provision host and runs through the
+`node-prep` role and the `installer` role. No modification is necessary. All
+modifications of variables may be done within the `inventory/hosts` file. A
+sample file is located in this repository under `inventory/hosts.sample`. 
 
 Sample playbook.yml
 ~~~sh
 ---
 - name: IPI on Baremetal Installation Playbook
   hosts: provisioner
-  vars:
-    activation_key: "mykey"
-    org_id: "111111"
-    myuser: kni
-    version: "4.3.0-0.nightly-2019-12-09-035405"
-    pullsecret: 'ENTER SECRET HERE'
   roles:
-    - role: node-prep
-      vars:
-        domain: example.com
-        cluster: cluster-name
-        extcidrnet: 10.1.1.0/21
-        dnsvip: 10.1.1.10
-        numworkers: 2
-        nummasters: 3
-        apivip: 10.1.1.11
-        ingressvip: 10.1.1.12
-    - role: installer
+  - node-prep
+  - installer
 ~~~
-
-NOTE: A description of the vars under the `node-prep` role are all reflected of
-what is required within your `install-config.yaml`. Ensure to review 
-[Configure the install-config and metal3-config](https://github.com/openshift-kni/baremetal-deploy/blob/master/install-steps.md#configure-the-install-config-and-metal3-config)
-for more information if unsure how to populate. 
 
 ## Adding Extra Configurations to the OpenShift Installer
 Prior to the installation of Red Hat OpenShift, you may want to include
@@ -367,7 +427,7 @@ $ ansible-playbook -i inventory/hosts playbook.yml
 Another very common error is getting a permission denied error similar to:
 
 ~~~sh
-$ ansible-playbook -i inventory/hosts test-playbook.yml 
+$ ansible-playbook -i inventory/hosts playbook.yml 
 
 PLAY [IPI on Baremetal Installation Playbook] *****************************************************************************************************
 
@@ -393,7 +453,7 @@ privileged user if not using `kni`.
 ~~~sh
 $ cat ansible.cfg 
 [defaults]
-inventory=/home/rlopez/git_projects/baremetal-deploy/ansible-ipi-install/inventory
+inventory=/path/to/baremetal-deploy/ansible-ipi-install/inventory
 remote_user=kni
 
 [privilege_escalation]
