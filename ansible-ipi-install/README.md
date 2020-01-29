@@ -492,7 +492,7 @@ This error is a little deceiving because the the `dnspython` package does
 but the package must be **installed on your local host** that is running the 
 Ansible playbook. 
 
-
+~~~sh
 TASK [node-prep : fail] ************************************************************************************************************
 skipping: [provisioner.example.com]
 
@@ -504,6 +504,7 @@ provisioner.example.com : ok=2    changed=0    unreachable=0    failed=1    skip
 
 The above issue can be fixed by simply installing `python3-dns` on your local
 system (assuming your using an OS such as Fedora, Red Hat)
+~~~
 
 On a local host running Red Hat 7.x, run: 
 ~~~sh
