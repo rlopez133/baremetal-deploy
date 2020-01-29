@@ -22,10 +22,11 @@ dir=/home/{{ myuser }}/clusterconfigs
 # Location of where the openshift-installer will be extracted
 extract_dir=/home/{{ myuser }}/extract
 
-# The user used to do the openshift-installation (requires passwordless sudo priv)
+# The user (i.e. kni) used to do the openshift-installation (requires passwordless sudo priv)
 myuser=""
 
 # The version of the openshift-installer, undefined or empty results in the playbook failing with error message.
+# Values accepted: 'latest-4.3', 'latest-4.4', explicit version i.e. 4.3.0-0.nightly-2019-12-09-035405
 version=""
 
 # Provisioning IP address (default value)
