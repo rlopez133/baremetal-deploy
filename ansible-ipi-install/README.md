@@ -482,4 +482,48 @@ provisioner.example.com | SUCCESS => {
 $ ansible-playbook -i inventory/hosts playbook.yml 
 ~~~
 
+## Dig lookup requires the python 'dnspython' library and it is not installed
+
+One of the tasks in the `node-prep` role captures your API VIP and the Ingress
+VIP of your environment using a `lookup` via `dig`. It does this 
+[DNS query using the `dnspython` library](https://docs.ansible.com/ansible/latest/plugins/lookup/dig.html). 
+This error is a little deceiving because the the `dnspython` package does 
+**not need to be installed on the remote server** (i.e. provisioner.example.com) 
+but the package must be **installed on your local host** that is running the 
+Ansible playbook. 
+
+
+TASK [node-prep : fail] ************************************************************************************************************
+skipping: [provisioner.example.com]
+
+TASK [node-prep : Verify DNS records for API VIP, Wildcard (Ingress) VIP] **********************************************************
+fatal: [provisioner.example.com]: FAILED! => {"msg": "An unhandled exception occurred while running the lookup plugin 'dig'. Error was a <class 'ansible.errors.AnsibleError'>, original message: The dig lookup requires the python 'dnspython' library and it is not installed"}
+
+PLAY RECAP *************************************************************************************************************************
+provisioner.example.com : ok=2    changed=0    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0 
+
+The above issue can be fixed by simply installing `python3-dns` on your local
+system (assuming your using an OS such as Fedora, Red Hat)
+
+On a local host running Red Hat 7.x, run: 
+~~~sh
+# sudo yum install python3-dns
+~~~
+
+On a local host running Red Hat 8.x, run: 
+~~~sh
+# sudo dnf install python3-dns
+~~~
+
+On a local host running Fedora, run: 
+~~~sh
+# sudo dnf install python3-dns
+~~~
+
+Re-run the Ansible playbook
+~~~sh
+$ ansible-playbook -i inventory/hosts playbook.yml 
+~~~
+
+
 
