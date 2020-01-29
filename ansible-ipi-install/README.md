@@ -179,7 +179,7 @@ become_method=sudo
 ~~~
 
 NOTE: Ensure to change the `remote_user` and `inventory` path as deemed
-apprioriate for your environment. The `remote_user` is the user previously
+appropriate for your environment. The `remote_user` is the user previously
 created on the provision node. 
 
 ## Ansible version 
@@ -215,10 +215,10 @@ NOTE: <user> should be the user previously created on the provision node
 ## Modifying the `inventory/hosts` file
 
 The hosts file provides all the definable variables and provides a description
-of each variable. Some of the variables are explicitly left empty and *require*
+of each variable. Some of the variables are explicitly left empty and **require**
 user input for the playbook to run. 
 
-Within the hosts file ensure to set all your nodes that will be used to deploy
+The hosts file also ensure to set up all your nodes that will be used to deploy
 IPI on baremetal. There are 3 groups: `masters`, `workers`, and `provisioner`. 
 The `masters` and `workers` group collects information about the host such as
 its name, role, user management (i.e. iDRAC) user, user management (i.e. iDRAC)
