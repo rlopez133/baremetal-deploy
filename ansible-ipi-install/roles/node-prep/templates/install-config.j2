@@ -26,7 +26,7 @@ platform:
       - name: {{ hostvars[host]['name'] }}
         role: {{ hostvars[host]['role'] }}
         bmc:
-          address: redfish://{{ hostvars[host]['ipmi_address'] }}/redfish/v1/Systems.Embedded.1
+          address: redfish://{{ hostvars[host]['ipmi_address'] }}/redfish/v1/Systems/System.Embedded.1
           username: {{ hostvars[host]['ipmi_user'] }}
           password: {{ hostvars[host]['ipmi_password'] }}
           disableCertificateVerification: true
